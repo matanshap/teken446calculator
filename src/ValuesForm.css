@@ -1,0 +1,5 @@
+@media (min-width: 992px) {
+    .marginClass {
+        flex-basis: 16.6667%;
+    }
+}
