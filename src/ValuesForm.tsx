@@ -40,6 +40,7 @@ function ValueField(props: ValueFieldProps): JSX.Element {
               onChange={props.onChange || (() => {})} 
               value={typeof props.value === 'number' ? props.value : ''}
               style={{backgroundColor: 'rgba(255, 255, 255, 0.7)'}}
+              step="any"
             />
             {props.end && <InputGroup.Append>
               <InputGroup.Text>{props.end}</InputGroup.Text>

@@ -16,15 +16,11 @@ const Field = (props: {title: JSX.Element, value: number}) => {
   )
 }
 
-export default function Results(props: {vrdc0: number, vrdc1: number, vrdMax: number}) {
+export default function Results(props: {vrdc: number, vrdMax: number}) {
   return (
     <>
-        <Field title={<span>vrdc<sub>0</sub></span>} value={props.vrdc0} />
-
-      <Field title={<span>vrdc<sub>1</sub></span>} value={props.vrdc1} />
-      <Field title={<span>vrd<sub>max</sub></span>} value={props.vrdMax} />
-
+      <Field title={<span>V<sub>rdc</sub></span>} value={props.vrdc} />
+      <Field title={<span>V<sub>RDmax</sub></span>} value={props.vrdMax} />
     </>
-
   )
 }

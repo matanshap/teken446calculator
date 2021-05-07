@@ -20,9 +20,13 @@ function calculateVrdmax(h:number, ds: number, u0: number, fck: number, fcd: num
 
 function calculateVrdc(h: number, ds: number, rho: number, cp: number, u0: number, u1: number, fck: number, k: number) {
   const d = h - ds
-  const vrdc0 = (((0.12*k*Math.pow(100*rho*0.7*fck, 1/3))*0.1*cp)*u0*d)/100
-  const vrdc1 = (((0.12*k*Math.pow(100*rho*0.7*fck, 1/3))*0.1*cp)*u1*d)/100
-  return [vrdc0, vrdc1, Math.max(vrdc0, vrdc1)]
+  // let vrdc0 = (((0.12*k*Math.pow(100*rho*0.7*fck, 1/3))+0.1*cp)*u0*d)/100
+  let vrdc = (((0.12*k*Math.pow(100*rho*0.7*fck, 1/3))+0.1*cp)*u1*d)/100
+  // if (vrdc0 < ((0.035*Math.pow(k, 1.5)*Math.sqrt(0.7*fck)+0.1*cp)*u0*d)/100)
+    // vrdc0 = ((0.035*Math.pow(k, 1.5)*Math.sqrt(0.7*fck)+0.1*cp)*u0*d)/100
+  if (vrdc < ((0.035*Math.pow(k, 1.5)*Math.sqrt(0.7*fck)+0.1*cp)*u1*d)/100)
+    vrdc = ((0.035*Math.pow(k, 1.5)*Math.sqrt(0.7*fck)+0.1*cp)*u1*d)/100
+  return vrdc
 }
 
 function calculateK(d: number) {
@@ -66,7 +70,7 @@ function App(): JSX.Element {
   const [validated, setValidated] = React.useState(false)
   const [k, setK] = React.useState<number | undefined>(undefined)
   const [fcd, setFcd] = React.useState(getFcdValue(formFields.fck))
-  const [results, setResults] = React.useState({vrdc1: undefined, vrdc0: undefined, vrdMax: undefined})
+  const [results, setResults] = React.useState({vrdc: undefined, vrdMax: undefined})
   const [alert, setAlert] = React.useState({message: '', variant: 'danger'})
 
   // const fcd = getFcdValue(formFields.fck)
@@ -77,14 +81,14 @@ function App(): JSX.Element {
       const d = h - ds
       const k = calculateK(d)
       setK(k)
-      const [vrdc0, vrdc1, vrdc] = calculateVrdc(h, ds, rho, cp, u0, u1, getFckNumber(fck), k)
+      const vrdc = calculateVrdc(h, ds, rho, cp, u0, u1, getFckNumber(fck), k)
 
       const vrdMax = Math.min(calculateVrdmax(h, ds, u0, getFckNumber(fck), fcd), 1.5*vrdc)
-      setResults({vrdc1, vrdc0, vrdMax})
+      setResults({vrdc, vrdMax})
       if (vdeq < vrdc) {
         setAlert({message: 'תקין', variant: 'success'})
       } else if (vdeq < vrdMax) {
-        setAlert({message: 'זיון לחדירה', variant: 'warning'})
+        setAlert({message: 'צריך זיון לחדירה', variant: 'warning'})
       } else {
         setAlert({message: 'לא ניתן לפתרון', variant: 'danger'})
       }
@@ -129,17 +133,15 @@ function App(): JSX.Element {
             k={k}
           />
           <Button size="lg" style={{direction: 'rtl', marginTop: '20px'}} type="submit" >חישוב</Button>
-
         </Form>
-
         <Button size="lg" style={{direction: 'rtl'}} onClick={exportToCsv} >ייצוא לקובץ Excel</Button>
-
       </Col>
-      <Col sm={6}>
+      <Col sm={6} style={{ marginTop: '30px', textAlign: 'center'}}>
+        <h1>תוצאות</h1>
+        {results.vrdMax && <Results {...results} />}
         {alert.message && <Alert style={{textAlign: 'center'}} variant={alert.variant}>
           {alert.message}
         </Alert>}
-        {results.vrdMax && <Results {...results} />}
       </Col>
     </Container>
   );
