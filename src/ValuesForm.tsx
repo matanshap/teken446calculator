@@ -17,7 +17,7 @@ function ValueField(props: ValueFieldProps): JSX.Element {
   return (
     <Col xs="12" sm="12" md="12" lg={{span: 6, offset: 0}} style={{margin: 'auto'}}  xl="6"  >
       <Form.Group as={Row} >
-        <Col xs={{span: 4}}>
+        <Col xs={{span: 4}} style={{flexWrap: 'nowrap'}} >
           <Row>
             <Col xs="8" style={{ padding: '0 5px 0 0'}}>
               <Form.Text style={{direction: 'rtl', lineHeight: 1}} >{props.text}</Form.Text>
