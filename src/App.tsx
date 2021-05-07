@@ -2,8 +2,9 @@ import React from 'react'
 import { Container, Row, Col, Button, Alert, Form } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import useFormFields from './useFormFields'
-
+import { FormFields } from "./types";
 import ValuesForm from './ValuesForm'
+import Results from './Results'
 
 
 function valuesToCsv(values: any[][]) {
@@ -21,34 +22,65 @@ function calculateVrdc(h: number, ds: number, rho: number, cp: number, u0: numbe
   const d = h - ds
   const vrdc0 = (((0.12*k*Math.pow(100*rho*0.7*fck, 1/3))*0.1*cp)*u0*d)/100
   const vrdc1 = (((0.12*k*Math.pow(100*rho*0.7*fck, 1/3))*0.1*cp)*u1*d)/100
-  return Math.max(vrdc0, vrdc1)
+  return [vrdc0, vrdc1, Math.max(vrdc0, vrdc1)]
 }
 
 function calculateK(d: number) {
-  return 1 + (Math.sqrt(200/d))
+  return Math.min(1 + (Math.sqrt(200/d)), 2)
 }
 
 
-function App() {
-  const {formFields, createChangeHandler} = useFormFields({
-    h: undefined as number | undefined, ds: undefined as number | undefined, 
-    rho: undefined as number | undefined, cp: undefined as number | undefined, 
-    u0: undefined as number | undefined, u1: undefined as number | undefined, 
-    vdeq: undefined as number | undefined, fck: undefined as number | undefined, 
-    fcd: undefined as number | undefined,
+const getFckNumber = (value: string | undefined) => {
+  switch(value) {
+    case 'ב30':
+      return 30
+    case 'ב40':
+      return 40
+    case 'ב50':
+      return 50
+    default: 
+      return undefined
+  }
+}
+
+const getFcdValue = (value: string | undefined) => {
+  switch(value) {
+    case 'ב30':
+      return 130
+    case 'ב40':
+      return 175
+    case 'ב50':
+      return 221
+    default: 
+      return undefined
+  }
+}
+
+function App(): JSX.Element {
+  const {formFields, createChangeHandler} = useFormFields<FormFields>({
+    h: undefined, ds: undefined, 
+    rho: undefined, cp: undefined, 
+    u0: undefined, u1: undefined, 
+    vdeq: undefined, fck: undefined, 
   })
   const [validated, setValidated] = React.useState(false)
-  const [k, setK] = React.useState(0)
+  const [k, setK] = React.useState<number | undefined>(undefined)
+  const [fcd, setFcd] = React.useState(getFcdValue(formFields.fck))
+  const [results, setResults] = React.useState({vrdc1: undefined, vrdc0: undefined, vrdMax: undefined})
   const [alert, setAlert] = React.useState({message: '', variant: 'danger'})
 
+  // const fcd = getFcdValue(formFields.fck)
+  // console.log(formFields.fck, '00000')
   function handleCalculate() {
-    const {h, ds, rho, cp, u0, u1, vdeq, fck, fcd} = formFields
-    if (Object.values(formFields).every(val => typeof val === 'number')) {
+    const {h, ds, rho, cp, u0, u1, vdeq, fck} = formFields
+    if (Object.values(formFields).every(val => val !== undefined)) {
       const d = h - ds
       const k = calculateK(d)
       setK(k)
-      const vrdc = calculateVrdc(h, ds, rho, cp, u0, u1, fck, k)
-      const vrdMax = Math.min(calculateVrdmax(h, ds, u0, fck, fcd), 1.5*vrdc)
+      const [vrdc0, vrdc1, vrdc] = calculateVrdc(h, ds, rho, cp, u0, u1, getFckNumber(fck), k)
+
+      const vrdMax = Math.min(calculateVrdmax(h, ds, u0, getFckNumber(fck), fcd), 1.5*vrdc)
+      setResults({vrdc1, vrdc0, vrdMax})
       if (vdeq < vrdc) {
         setAlert({message: 'תקין', variant: 'success'})
       } else if (vdeq < vrdMax) {
@@ -56,16 +88,20 @@ function App() {
       } else {
         setAlert({message: 'לא ניתן לפתרון', variant: 'danger'})
       }
-    } else {
-
     }
   }
 
+  React.useEffect(() => {
+    setFcd(getFcdValue(formFields.fck))
+  }, [formFields.fck])
+
   const exportToCsv = () => {
-    const keys = Object.keys(formFields)
-    const values = Object.values(formFields) as number[]
+    const keys = Object.keys(formFields).concat(Object.keys(results))
+
+    const values = Object.values(formFields).concat(Object.values(results)) as number[]
     
     const csvData = valuesToCsv([keys, values])
+    
     const a = document.createElement('a')
     a.setAttribute("href", csvData)
     a.setAttribute("download", "my_data.csv")
@@ -87,6 +123,7 @@ function App() {
         <h1>נתונים</h1>
         <Form validated={validated} onSubmit={handleSubmit} style={{marginBottom: '50px'}}>
           <ValuesForm 
+            fcd={fcd}
             formFields={formFields} 
             createChangeHandler={createChangeHandler as ((key: string) => (e: React.ChangeEvent<HTMLInputElement>) => void)} 
             k={k}
@@ -102,6 +139,7 @@ function App() {
         {alert.message && <Alert style={{textAlign: 'center'}} variant={alert.variant}>
           {alert.message}
         </Alert>}
+        {results.vrdMax && <Results {...results} />}
       </Col>
     </Container>
   );

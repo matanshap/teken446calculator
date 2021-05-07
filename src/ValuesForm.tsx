@@ -1,6 +1,7 @@
 import React, { useState, useReducer } from 'react'
 import { Form, Col, Row, Container, InputGroup, Button } from "react-bootstrap"
 import './ValuesForm.css'
+import {FormFields} from './types'
 
 interface ValueFieldProps {
   required: boolean
@@ -21,7 +22,7 @@ function ValueField(props: ValueFieldProps): JSX.Element {
             <Col xs="8" style={{ padding: '0 5px 0 0'}}>
               <Form.Text style={{direction: 'rtl', lineHeight: 1}} >{props.text}</Form.Text>
             </Col>
-            <Col xs="4" style={{flexBasis: 0, padding: 0}} >
+            <Col xs="4" >
               <Form.Label style={{whiteSpace: 'nowrap'}} >
                 { props.children }
               </Form.Label>
@@ -37,7 +38,7 @@ function ValueField(props: ValueFieldProps): JSX.Element {
               readOnly={props.readOnly} 
               type="number" 
               onChange={props.onChange || (() => {})} 
-              value={props.value || ''}
+              value={typeof props.value === 'number' ? props.value : ''}
               style={{backgroundColor: 'rgba(255, 255, 255, 0.7)'}}
             />
             {props.end && <InputGroup.Append>
@@ -50,9 +51,42 @@ function ValueField(props: ValueFieldProps): JSX.Element {
   )
 }
 
+interface SelectFieldProps extends React.HTMLProps<HTMLInputElement> {
+  fieldTitle: string | JSX.Element, 
+  options: any[],
+  value: any,
+  readOnly?: boolean
+}
+
+function SelectField(props: SelectFieldProps) {
+  console.log(props)
+  return (
+    <Col xs="12" sm="12" md="12" lg={{span: 6, offset: 0}} style={{margin: 'auto'}}  xl="6">
+      <Form.Group as={Row}>
+        <Col xs="4">
+          <Row>
+            <Col xs={{offset: 8}}>
+              <Form.Label>
+                {props.fieldTitle}
+              </Form.Label>
+            </Col>
+          </Row>
+        </Col>
+        <Col xs="8">
+          <Form.Control required readOnly={props.readOnly} onChange={props.onChange as () => string} value={props.value} as="select" custom>
+            {props.options.map(optionValue => <option key={optionValue} value={optionValue}>{optionValue}</option>)}
+          </Form.Control>
+        </Col>
+      </Form.Group>
+    </Col>
+  )
+}
+
+
 type ValuesFormProps = {
   k: number, 
-  formFields: {[x: string]: number}, 
+  fcd: number,
+  formFields: FormFields, 
   createChangeHandler: (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -63,12 +97,26 @@ export default function ValuesForm(props: ValuesFormProps) {
       <ValueField required value={formFields.h} text="עובי אלמנט" end="cm" onChange={createChangeHandler('h')} >
         H
       </ValueField>
-      <ValueField required value={formFields.fck} text="החוזק האופייני"  onChange={createChangeHandler('fck')} >
+      {/* <ValueField required value={formFields.fck} text="החוזק האופייני"  onChange={createChangeHandler('fck')} >
         F<sub>ck</sub>
-      </ValueField>
-      <ValueField required value={formFields.fcd} text="חוזק התכן" onChange={createChangeHandler('fcd')} >
+      </ValueField> */}
+      <SelectField 
+        fieldTitle={<span>F<sub>ck</sub></span>} 
+        options={['ב30', 'ב40', 'ב50']} 
+        value={formFields.fck}
+        onChange={createChangeHandler('fck')} 
+      />
+
+      <SelectField 
+        fieldTitle={<span>F<sub>cd</sub></span>} 
+        options={[130, 175, 221]} 
+        value={props.fcd} 
+        readOnly 
+      />
+
+      {/* <ValueField required value={formFields.fcd} text="חוזק התכן" onChange={createChangeHandler('fcd')} >
         F<sub>cd</sub>
-      </ValueField>
+      </ValueField> */}
       {/* <div className="marginClass" /> */}
       <ValueField  required value={formFields.ds} onChange={createChangeHandler('ds')} text="שכבת כיסוי בטון" end="cm" >
         ds
