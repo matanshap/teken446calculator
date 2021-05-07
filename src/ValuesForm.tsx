@@ -73,7 +73,16 @@ function SelectField(props: SelectFieldProps) {
           </Row>
         </Col>
         <Col xs="8">
-          <Form.Control required readOnly={props.readOnly} onChange={props.onChange as () => string} value={props.value} as="select" custom>
+          <Form.Control 
+            required 
+            readOnly={props.readOnly} 
+            onChange={props.onChange as () => string} 
+            value={props.value} 
+            as="select" 
+            custom
+            style={{backgroundColor: 'rgba(255, 255, 255, 0.7)'}}
+          >
+            <option style={{display: 'none'}} value='' />
             {props.options.map(optionValue => <option key={optionValue} value={optionValue}>{optionValue}</option>)}
           </Form.Control>
         </Col>
@@ -101,22 +110,24 @@ export default function ValuesForm(props: ValuesFormProps) {
         F<sub>ck</sub>
       </ValueField> */}
       <SelectField 
+        placeholder="חוזק אופייני"
         fieldTitle={<span>F<sub>ck</sub></span>} 
         options={['ב30', 'ב40', 'ב50']} 
-        value={formFields.fck}
+        value={formFields.fck || ''}
         onChange={createChangeHandler('fck')} 
       />
 
-      <SelectField 
+      {/* <SelectField 
+        placeholder="חוזק התכן"
         fieldTitle={<span>F<sub>cd</sub></span>} 
         options={[130, 175, 221]} 
-        value={props.fcd} 
+        value={props.fcd || ''} 
         readOnly 
-      />
+      /> */}
 
-      {/* <ValueField required value={formFields.fcd} text="חוזק התכן" onChange={createChangeHandler('fcd')} >
+      <ValueField required value={props.fcd} text="חוזק התכן" readOnly >
         F<sub>cd</sub>
-      </ValueField> */}
+      </ValueField>
       {/* <div className="marginClass" /> */}
       <ValueField  required value={formFields.ds} onChange={createChangeHandler('ds')} text="שכבת כיסוי בטון" end="cm" >
         ds
