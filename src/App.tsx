@@ -14,7 +14,7 @@ function valuesToCsv(values: any[][]) {
 
 function calculateVrdmax(h:number, ds: number, u0: number, fck: number, fcd: number) {
   const d = h - ds
-  const res = 0.3 * (1-0.7*(fck/250))*fcd*u0*d
+  const res = 0.0003 * (1-0.7*(fck/250))*fcd*u0*d
   return res
 }
 
@@ -26,7 +26,7 @@ function calculateVrdc(h: number, ds: number, rho: number, cp: number, u0: numbe
 }
 
 function calculateK(d: number) {
-  return Math.min(1 + (Math.sqrt(200/d)), 2)
+  return Math.min(1 + (Math.sqrt(20/d)), 2)
 }
 
 
