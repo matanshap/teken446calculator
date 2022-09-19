@@ -14,16 +14,14 @@ function valuesToCsv(values: any[][]) {
 
 function calculateVrdmax(h:number, ds: number, u0: number, fck: number, fcd: number) {
   const d = h - ds
-  const res = 0.0003 * (1-0.7*(fck/250))*fcd*u0*d
+  const res = 0.00024 * (1-0.7*(fck/250))*fcd*u0*d
   return res
 }
 
 function calculateVrdc(h: number, ds: number, rho: number, cp: number, u0: number, u1: number, fck: number, k: number) {
   const d = h - ds
-  // let vrdc0 = (((0.12*k*Math.pow(100*rho*0.7*fck, 1/3))+0.1*cp)*u0*d)/100
   let vrdc = (((0.12*k*Math.pow(100*rho*0.7*fck, 1/3))+0.1*cp)*u1*d)/100
-  // if (vrdc0 < ((0.035*Math.pow(k, 1.5)*Math.sqrt(0.7*fck)+0.1*cp)*u0*d)/100)
-    // vrdc0 = ((0.035*Math.pow(k, 1.5)*Math.sqrt(0.7*fck)+0.1*cp)*u0*d)/100
+
   if (vrdc < ((0.035*Math.pow(k, 1.5)*Math.sqrt(0.7*fck)+0.1*cp)*u1*d)/100)
     vrdc = ((0.035*Math.pow(k, 1.5)*Math.sqrt(0.7*fck)+0.1*cp)*u1*d)/100
   return vrdc
@@ -81,7 +79,7 @@ function App(): JSX.Element {
       const d = h - ds
       const k = calculateK(d)
       setK(k)
-      const vrdc = calculateVrdc(h, ds, rho, cp, u0, u1, getFckNumber(fck), k)
+      const vrdc = calculateVrdc(h, ds, rho * 100, cp, u0, u1, getFckNumber(fck), k)
 
       const vrdMax = Math.min(calculateVrdmax(h, ds, u0, getFckNumber(fck), fcd), 1.5*vrdc)
       setResults({vrdc, vrdMax})

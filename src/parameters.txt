@@ -1,0 +1,18 @@
+user inserted:
+# MPA => divide by 100
+f_sd
+f_cd
+f_pd
+
+# cm^2
+A_sp
+A_sm
+
+# cm
+H, d_sp => d_p (=H - d_sp)
+b
+ds' <=> d_smc
+
+#
+esp = 205000
+
