@@ -79,7 +79,7 @@ function App(): JSX.Element {
       const d = h - ds
       const k = calculateK(d)
       setK(k)
-      const vrdc = calculateVrdc(h, ds, rho * 100, cp, u0, u1, getFckNumber(fck), k)
+      const vrdc = calculateVrdc(h, ds, rho / 100, cp, u0, u1, getFckNumber(fck), k)
 
       const vrdMax = Math.min(calculateVrdmax(h, ds, u0, getFckNumber(fck), fcd), 1.5*vrdc)
       setResults({vrdc, vrdMax})
