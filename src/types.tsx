@@ -1,3 +1,5 @@
+import { AlertProps } from 'react-bootstrap'
+
 export interface FormFields {
   h: number | undefined, 
   ds: number | undefined, 
@@ -7,4 +9,10 @@ export interface FormFields {
   u1: number | undefined, 
   vdeq: number | undefined, 
   fck: string | undefined,
+}
+
+export interface AlertType {
+  message: string,
+  variant: AlertProps["variant"],
+  on: boolean
 }

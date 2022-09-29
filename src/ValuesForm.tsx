@@ -3,9 +3,10 @@ import { Form, Col, Row, Container, InputGroup, Button } from "react-bootstrap"
 import './ValuesForm.css'
 import {FormFields} from './types'
 
+
 interface ValueFieldProps {
   required: boolean
-  value: number,
+  value?: number,
   children?: any, 
   text?: string, 
   end?: string, 
@@ -18,7 +19,7 @@ function ValueField(props: ValueFieldProps): JSX.Element {
     <Col xs="12" sm="12" md="12" lg={{span: 6, offset: 0}} style={{margin: 'auto'}}  xl="6"  >
       <Form.Group as={Row} >
         <Col xs={{span: 4}} style={{flexWrap: 'nowrap'}} >
-          <Row>
+          <Row >
             <Col xs="8" style={{ padding: '0 5px 0 0'}}>
               <Form.Text style={{direction: 'rtl', lineHeight: 1}} >{props.text}</Form.Text>
             </Col>
@@ -100,10 +101,11 @@ type ValuesFormProps = {
   createChangeHandler: (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export default function ValuesForm(props: ValuesFormProps) {
+
+export function Teken466ValuesForm(props: ValuesFormProps) {
   const {formFields, createChangeHandler} = props
   return (
-    <Row as={Container} fluid>
+    <Row>
       <ValueField required value={formFields.h} text="עובי אלמנט" end="cm" onChange={createChangeHandler('h')} >
         H
       </ValueField>
@@ -117,14 +119,6 @@ export default function ValuesForm(props: ValuesFormProps) {
         value={formFields.fck || ''}
         onChange={createChangeHandler('fck')} 
       />
-
-      {/* <SelectField 
-        placeholder="חוזק התכן"
-        fieldTitle={<span>F<sub>cd</sub></span>} 
-        options={[130, 175, 221]} 
-        value={props.fcd || ''} 
-        readOnly 
-      /> */}
 
       <ValueField required value={props.fcd} text="חוזק התכן" readOnly >
         F<sub>cd</sub>
@@ -157,3 +151,58 @@ export default function ValuesForm(props: ValuesFormProps) {
     </Row>
   )
 }
+
+
+const prestressedConcreteValuesArray = [
+  "C_all",
+  "A_c",
+  "C_ult",
+  "C_usmc",
+  "x",
+  "f_sd",
+  "f_cd",
+  "f_pd",
+  "A_sp",
+  "A_sm",
+  "d_sp",
+  "d_sm",
+  "d_smc",
+  "b",
+  "A_smc",
+  "T_sall",
+  "T_ult",
+  "T_usm",
+  "eps_ud",
+  "eps_cu",
+  "eps_pe"
+]
+
+function createName(name: string) {
+  const arr = name.split('_')
+  if (arr.length == 1) return <>{arr[0]}</>
+  if (arr[0] == 'eps') return <>&epsilon; <sub>{arr[1]}</sub></>
+  return <>{arr[0]}<sub>{arr[1]}</sub></>
+}
+
+export function PrestressedConcreteValuesForm() {
+
+  const handleSubmit = () => {
+
+  }
+
+  return (
+
+    <Form onSubmit={handleSubmit} style={{ marginBottom: '50px' }}>      
+      <Row as={Container}>
+        {
+          prestressedConcreteValuesArray.map(value => 
+            <ValueField required>
+              {createName(value)}
+            </ValueField>
+          )
+        }
+      </Row>
+    </Form>
+  )
+}
+

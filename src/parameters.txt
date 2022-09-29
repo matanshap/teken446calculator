@@ -7,6 +7,7 @@ f_pd
 # cm^2
 A_sp
 A_sm
+(A_smc)
 
 # cm
 H, d_sp => d_p (=H - d_sp)
