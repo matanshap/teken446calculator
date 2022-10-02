@@ -8,7 +8,7 @@ export default function Results() {
   return (
     <Teken466Context.Consumer>
       {({results}) => Object.entries(results).map(
-        ([key, value]) => <Field title={key} value={value} />)}
+        ([key, value]) => <Field title={key} value={value} key={key} />)}
     </Teken466Context.Consumer>
   )
 }

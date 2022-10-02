@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Container, Row, Col, Button, Alert } from "react-bootstrap"
 import Results from "./Results"
 import { exportToCsv } from "../utils"
@@ -20,6 +20,21 @@ export interface PrestressedConcreteResultsType {
   d: number
 }
 
+const mockData = {
+  "f_cd": 21.7,
+  "f_pd": 1373.913,
+  "d_sp": 7,
+  "d_sm": 3,
+  "b": 100,
+  "A_sm": 15.2,
+  "A_smc": 15.2,
+  "H": 100,
+  "f_sd": 435,
+  "A_sp": 7500,
+  "d_smc": 3,
+  "M_d": 75
+}
+
 export default function PrestressedConcrete() {
   const [results, setResults] = useState<PrestressedConcreteResultsType>()
   const [alert, setAlert] = useState<AlertType>({
@@ -27,6 +42,9 @@ export default function PrestressedConcrete() {
     message: '',
     variant: ''
   })
+
+  useEffect(() => console.log('results', results), [results])
+
   return (
     <PrestressedConcreteContext.Provider value={{setResults, results, setAlert, alert}}>    
       <Container as={Row} fluid style={{margin: 0}}>

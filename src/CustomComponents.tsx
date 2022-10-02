@@ -61,6 +61,8 @@ export const ValueField = (props: ValueFieldProps)=> {
               type="number" 
               style={{backgroundColor: 'rgba(255, 255, 255, 0.7)'}}
               step="any"
+              value={props.value}
+              name={props.title}
             />
             {props.end && <InputGroup.Append>
               <InputGroup.Text>{props.end}</InputGroup.Text>

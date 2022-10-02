@@ -196,7 +196,7 @@ export function PrestressedConcreteValuesForm() {
       <Row as={Container}>
         {
           prestressedConcreteValuesArray.map(value => 
-            <ValueField required>
+            <ValueField key={value} required>
               {createName(value)}
             </ValueField>
           )
