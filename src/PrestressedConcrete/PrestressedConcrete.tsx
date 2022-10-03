@@ -7,7 +7,7 @@ import PrestressedConcreteContext from "./PrestressedConcreteContext"
 import { AlertType } from "../types"
 import { CsvExportButton } from "../CustomComponents"
 
-enum Reinforcement {
+export enum Reinforcement {
   UnderReinforced = "UnderReinforced", 
   OverReinforced = "OverReinforced"
 }

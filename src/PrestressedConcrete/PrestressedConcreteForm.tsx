@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Form, Row, Container, Button, Col } from 'react-bootstrap'
+import { Form, Row, Container, Button, Col, Spinner } from 'react-bootstrap'
 import PrestressedConcreteContext from './PrestressedConcreteContext'
 import { PrestressedConcreteResultsType } from './PrestressedConcrete'
 import { ValueField } from '../CustomComponents'
@@ -42,9 +42,11 @@ export default function PrestressedConcreteForm() {
 
   const context = React.useContext(PrestressedConcreteContext)
   const formRef = React.useRef<HTMLFormElement>()
+  const [isCalculating, setIsCalaulating] = React.useState(false)
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event.preventDefault()
+    setIsCalaulating(true)
     const elements = Array.from(formRef.current.elements) as HTMLInputElement[]
     const data = elements.reduce(
       (acc, curr) => ({...acc, [curr.getAttribute('name')]: Number(curr.value)}), {})
@@ -63,7 +65,7 @@ export default function PrestressedConcreteForm() {
           on: true,
           message: "HELLO"
         })
-      
+        setIsCalaulating(false)
         console.log(json)
       })
   }
@@ -77,7 +79,26 @@ export default function PrestressedConcreteForm() {
           )
         }
         <Col xs="12" sm="12" md="12" lg={{span: 6, offset: 0}} style={{margin: 'auto'}}  xl="6"  >
-          <Button size="lg" style={{ direction: 'rtl', marginTop: '20px' }} type="submit" >חישוב</Button>
+          <Button size="lg" style={{ direction: 'rtl', marginTop: '20px', position: 'relative' }} type="submit" disabled={isCalculating}>
+          {
+            isCalculating && 
+            <div 
+              style={{
+                position: "absolute",
+                height: "100%",
+                width: "100%",
+                display: "flex",
+                right: 0,
+                top: 0,
+                alignItems: "center",
+                justifyContent: 'center'
+              }}
+            >
+              <Spinner animation="border" />
+            </div>
+          }
+            חישוב
+          </Button>
         </Col>
       </Row>
     </Form>
