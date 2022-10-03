@@ -8,3 +8,5 @@ export interface FormFields {
   vdeq: number | undefined, 
   fck: string | undefined,
 }
+
+type test = string;
